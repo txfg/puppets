@@ -4,16 +4,15 @@
 //
 //  Created by Guzman Family on 7/9/25.
 //
-
 import UIKit
-import MLKit
+import MLKit             // Core ML Kit framework
+import MLKitFaceDetection // Provides Face, FaceContourType, MLKFacePoint, MLKFaceLandmark
+import MLKitVision        // Provides VisionPoint
 
 class FaceOverlayView: UIView {
     var faces: [Face] = []
     var videoSize: CGSize = .zero // Dimensions of the raw video buffer (e.g., 1920x1080 for landscape)
     var isMirrored: Bool = false // True if the current camera output is intended to be horizontally flipped (like front camera)
-
-
 
     override func draw(_ rect: CGRect) {
         // --- ADD THIS PRINT STATEMENT ---
@@ -27,7 +26,7 @@ class FaceOverlayView: UIView {
         context.setLineWidth(1.5)
 
         for face in faces {
-          
+
             let contoursToDraw: [FaceContourType] = [
                 .face,
                 .leftEyebrowTop, .leftEyebrowBottom,
@@ -58,8 +57,8 @@ class FaceOverlayView: UIView {
                     }
 
                     if contourType == .face || contourType == .leftEye || contourType == .rightEye ||
-                       contourType == .upperLipTop || contourType == .upperLipBottom ||
-                       contourType == .lowerLipTop || contourType == .lowerLipBottom {
+                        contourType == .upperLipTop || contourType == .upperLipBottom ||
+                        contourType == .lowerLipTop || contourType == .lowerLipBottom {
                         path.close()
                     }
 
@@ -151,7 +150,7 @@ class FaceOverlayView: UIView {
 
         return CGRect(x: transformedX, y: transformedY, width: transformedWidth, height: transformedHeight)
     }
-    
+
     func convertPoint(fromVisionPoint visionPoint: VisionPoint) -> CGPoint {
         guard videoSize != .zero else { return .zero }
 
@@ -201,7 +200,7 @@ class FaceOverlayView: UIView {
         // Apply the offsets to position within the view
         transformedX += offsetX
         transformedY += offsetY
-        
+
         print("      convertPoint: Input VisionPoint (\(visionPoint.x), \(visionPoint.y)) -> Output CGPoint (\(transformedX), \(transformedY))")
 
         return CGPoint(x: transformedX, y: transformedY)
