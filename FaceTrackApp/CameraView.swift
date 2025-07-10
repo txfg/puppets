@@ -8,6 +8,7 @@
 import SwiftUI
 import AVFoundation
 import MLKit // MLKit is used by CameraViewController, so useful to import here too.
+import MLKitVision
 
 
 struct CameraView: UIViewControllerRepresentable {
@@ -81,22 +82,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         // Key Changes for your use case:
         options.performanceMode = .fast      // Prioritize speed for real-time single-face tracking.
         options.minFaceSize = 0.25           // Increase this if faces are always large and close.
-                                             // This tells ML Kit to ignore faces smaller than 25% of the image width.
                                              // Adjust this value based on how "close" the face will be.
-                                             // Start higher and lower if needed.
 
         // Important for contours:
         options.contourMode = .all           // Still crucial for getting all contour points.
 
-        // If you only expect one face and don't need to differentiate between them across frames,
-        // disabling tracking can offer a slight performance gain, but also means each frame's
-        // detection is treated as entirely new. If you need consistent IDs for the single face,
-          // and don't need a persistent ID for it across frames.
-                                             // If you need to track the *same* specific face, keep it true.
+        // REMOVE THIS LINE:
+        // options.trackingEnabled = false     // This line causes the error when contourMode is .all
 
         // Keep these if you need them, otherwise set to .none for performance:
-        options.landmarkMode = .none         // Set to .none if you only care about contours, not specific landmarks like 'noseBase'.
-                                             // (You are drawing contours, so you might not need separate landmark points).
+        options.landmarkMode = .none         // Set to .none if you only care about contours.
         options.classificationMode = .none   // Definitely set to .none if you don't need smile/eye-open detection.
 
         return FaceDetector.faceDetector(options: options)
